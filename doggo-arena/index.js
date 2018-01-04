@@ -274,4 +274,191 @@ function qs(query, node) {
 
 
 
+// EVENTS & THE LOOP
+
+// .addEventListener is method available on nodes
+// and the document object.
+
+// It takes at least two arguments:
+
+// - A string named after an event (e.g. 'click', 'submit',
+//   'mouseenter', 'keydown', etc.)
+//   List of events: https://developer.mozilla.org/en-US/docs/Web/Events
+
+// - A callback function, named "listener", that is called when
+//   the event is triggered. This is where you should all of your
+//   that would run in response to user interaction.
+
+// toxicTim.addEventListener('click', () => {
+//   console.log('Toxic Tim was clicked!')
+// })
+//
+// document.addEventListener('click', () => {
+//   console.log('Document was clicked!')
+// })
+
+// Exercise: Clicking Titles
+// When creating event listener, you have to iterate
+// over all the nodes that will trigger the events.
+// You can't declare an event listener on a NodeList.
+// qs('.doggo h1').forEach(node => {
+//   node.addEventListener('click', () => {
+//     console.log('Doggo name was clicked!')
+//   });
+// });
+
+// To check if an object is a Node, use the `instanceof` operator.
+
+toxicTim instanceof Node // true
+"Am I a node?" instanceof Node // false
+
+// EVENT OBJECT
+
+teamSalmon.addEventListener('click', function (event) {
+  console.log('=====================');
+  console.log(event);
+  // The `currentTarget` property holds a reference
+  // the node that calls the .addEventListener method.
+  // The listening node.
+  console.log('currentTarget:', event.currentTarget);
+  // The `target` property holds a reference to the node
+  // that is the original source of the triggering event.
+  // It must always be a descendant of the `currentTarget`.
+  // Sometimes the `target` and `currentTarget` can be the same.
+  console.log('target:', event.target);
+  console.log('client x, y:', event.clientX, event.clientY);
+  console.log('offset x, y:', event.offsetX, event.offsetY);
+  // `this` inside a listener callback is always the `currentTarget`.
+  // I recommend that you use `currentTarget` instead of `this`
+  // in listeners, because `this` will not work with arrow functions.
+  console.log('this:', this);
+});
+
+// Exercise: Last in Queue
+// When a doggo is clicked, move them to the end of the team.
+
+// for (let doggo of qs('.doggo')) {
+//   doggo.addEventListener('click', event => {
+//     const currentTarget = event.currentTarget;
+//     const roster = currentTarget.parentElement;
+//     roster.appendChild(currentTarget);
+//   });
+// }
+
+// MOUSE EVENTS
+
+
+qs('.doggo').forEach(node => {
+  // dblclick
+  node.addEventListener('dblclick', e => {
+      const doggo = e.currentTarget;
+      doggo.classList.toggle('invert');
+  });
+
+  node.addEventListener('mousedown', e => {
+    const doggo = e.currentTarget;
+    doggo.classList.add('rot45deg');
+  });
+
+  node.addEventListener('mouseup', e => {
+    const doggo = e.currentTarget;
+    doggo.classList.remove('rot45deg');
+  });
+});
+
+// Exercise: Crouching Mouse Hidden Doggo
+
+qs('.doggo').forEach(node => {
+  node.addEventListener('mouseenter', e => {
+    e.currentTarget.classList.add('monochrome');
+  });
+
+  node.addEventListener('mouseleave', e => {
+    e.currentTarget.classList.remove('monochrome');
+  });
+});
+
+// FORM EVENTS
+// input
+
+const random = n =>  Math.ceil(Math.random() * n);
+const keySound = () => new Audio(`sounds/vintage-keyboard-${random(5)}.wav`);
+
+qs('#application-form input').forEach(input => {
+  input.addEventListener('input', e => {
+    // The best to get the current data in a input field
+    // when an input event triggers is by grabbing the value
+    // of the `value` property of the `currentTarget`.
+    // console.log(e.currentTarget.value);
+    keySound().play();
+  });
+});
+
+// submit
+
+q('#application-form').addEventListener('submit', e => {
+  // To prevent a form from doing a http request when
+  // it is submitted, use the `.preventDefault()` method on
+  // the event object. You can also use this method to prevent
+  // the default behaviour of any other node such anchors.
+  e.preventDefault();
+  const formNode = e.currentTarget;
+
+  // Use the FormData constructor on a form node
+  // to easily gather all the values of its input fields.
+  const fData = new FormData(formNode);
+  console.log(fData);
+
+  // Use the `.get()` method instances of the FormData object
+  // to get the values of specific input fields. `.get()` will
+  // take the `name` of the input field as an argument.
+  console.log('name:', fData.get('name'));
+  console.log('picture-url:', fData.get('picture-url'));
+  // To get all values from a FormData instance, use the
+  // `.entries()` method which returns a 2-dimensional array
+  // where each sub-array contains the name and value of an input
+  // field. You need to call `Array.from()` to get that data as an array.
+  console.log('Form Data Entries:', Array.from(fData.entries()))
+
+  const pictureUrl = fData.get('picture-url');
+  if (pictureUrl.includes('http') && pictureUrl.includes('jpg')) {
+    q('.doggo.blank').style.backgroundImage = `url(${pictureUrl})`;
+  }
+});
+
+// KEYBOARD EVENTS
+
+// keydown
+document.addEventListener('keydown', e => {
+  // Easy way to find out the keyCode of letter is by logging
+  // the `keyCode` property of an event and pressing keys.
+  // console.log('keyCode:', e.keyCode);
+  // When Shift-Ctrl-N are pressed, send the user to
+  // http://nyan.cat
+  if (e.shiftKey && e.ctrlKey && e.keyCode == 78) {
+    window.location.href = 'http://nyan.cat';
+  }
+});
+
+
+// Exercise: Shortcuts of the Ninja
+// Typing 'panic' sends the user to 'http://hackertyper.net'.
+
+let inputBuffer = '';
+document.addEventListener('keydown', e => {
+  const {key} = e;
+  if (key.length === 1) {
+    inputBuffer = (inputBuffer + key).slice(-5);
+  }
+
+  if (inputBuffer.toLowerCase() === 'panic') {
+    console.log('Sending user to...');
+    window.location.href = 'http://hackertyper.net'
+  }
+  console.log(inputBuffer);
+});
+
+
+
+
 // bump
