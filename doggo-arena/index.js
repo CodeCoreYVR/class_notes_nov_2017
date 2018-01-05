@@ -314,6 +314,7 @@ toxicTim instanceof Node // true
 
 // EVENT OBJECT
 
+/*
 teamSalmon.addEventListener('click', function (event) {
   console.log('=====================');
   console.log(event);
@@ -333,6 +334,7 @@ teamSalmon.addEventListener('click', function (event) {
   // in listeners, because `this` will not work with arrow functions.
   console.log('this:', this);
 });
+*/
 
 // Exercise: Last in Queue
 // When a doggo is clicked, move them to the end of the team.
@@ -457,6 +459,63 @@ document.addEventListener('keydown', e => {
   }
   console.log(inputBuffer);
 });
+
+// EVENT PROPAGATION
+
+// DOM event objects spread through the document in a specific manner.
+// They always begin at the eldest node then trickle downwards to the
+// the target triggering any listener along the way. This is the
+// CAPTURING PHASE.
+
+// Once an event reaches the target node, it is in a transition phase
+// named `AT_TARGET`. Afterwards, the event bubbles up from parent
+// to parent until it reaches the eldest ancestor node. This
+// is the BUBBLING PHASE the default behaviour of `.addEventListener()`.
+
+function toPhaseName (eventPhaseId) {
+  switch (eventPhaseId) {
+    case 0:
+      return 'none';
+    case 1:
+      return 'capturing phase';
+    case 2:
+      return 'target phase';
+    case 3:
+      return 'bubbling phase';
+  }
+}
+
+function propagationLogger (e) {
+  // console.log(e);
+  const currentTarget = e.currentTarget;
+  const {id, tagName, className} = currentTarget;
+  // destructuring syntax 👆 shortcut for 👇
+  // const id = currentTarget.id;
+  // const tagName = currentTarget.tagName;
+  // const className = currentTarget.className;
+
+  if (currentTarget.matches('.doggo') /*&& e.eventPhase === 3*/) {
+    // `event.stopPropagation()` can be used to prevent an event
+    // from propagating further. You can do this during the capturing phase
+    // which means that the event would never reach the default bubbling phase.
+    // This comes in handy when we have a lot of event listeners and
+    // we may not want a node's ancestor listeners to trigger.
+    e.stopPropagation();
+    // 👆 prevents the event from spreading once it reaches a node with
+    // the doggo class.
+  }
+
+  console.log(id, tagName, className, 'Phase:', toPhaseName(e.eventPhase));
+}
+
+qs('.doggo, .roster, .team, .teams, body').forEach(node => {
+  node.addEventListener('click', propagationLogger, { capture: false });
+  node.addEventListener('click', propagationLogger, { capture: true });
+});
+
+
+
+
 
 
 
