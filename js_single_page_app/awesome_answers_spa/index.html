@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Awesome Answers</title>
+    <script src="js/index.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="css/index.css">
+  </head>
+  <body>
+    <nav>
+      <strong>Awesome Answers</strong>
+      <a href data-target="#QuestionIndex">Questions</a>
+      |
+      <a href data-target="#QuestionNew">New Question</a>
+    </nav>
+
+    <div id="QuestionIndex" class="page"></div>
+    <div id="QuestionShow" class="page hidden"></div>
+    <div id="QuestionNew" class="page hidden">
+      <form id="QuestionForm">
+        <div>
+          <label for="title">Title</label>
+          <input name="title" id="title" />
+        </div>
+        <div>
+          <label for="body">Body</label>
+          <textarea name="body" id="body"> </textarea>
+        </div>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+  </body>
+</html>

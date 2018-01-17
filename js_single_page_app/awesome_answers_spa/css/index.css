@@ -1,0 +1,28 @@
+html {
+  font-family: Helvetica, sans-serif;
+}
+
+* {
+  font-family: inherit;
+}
+
+body {
+  margin: 0;
+}
+
+nav {
+  padding: 15px;
+  background-color: whitesmoke;
+}
+
+.hidden {
+  display: none;
+}
+
+.page {
+  margin: 15px;
+}
+
+#QuestionIndex > * {
+  margin-bottom: 10px;
+}
